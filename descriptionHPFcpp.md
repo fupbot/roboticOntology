@@ -13,7 +13,7 @@ Aside from that, the code has the 'Active Exploration' and 'Navigation' modes. T
 This description does not include attributes specific to QtCreator and the graphical user interface (GUI), only HPF variables and functions. <br>
 There are still many aspects to improve in this algorithm, such as refactoring it into OOP style, creating abstract classes and increasing information traceability, converting it to python and ROS 2, etc. These changes will be performed as the project moves forward.  
 
-#### GLOBAL VARIABLES AND STRUCTS
+#### VARIABLES AND STRUCTS
 ---
 This struct, a custom defined type in C++, was used as a global variable for keeping track of properties of each indivual cell of the map. 
 ```
@@ -44,3 +44,18 @@ The sensors used were 8 sonars placed at the front face of the robot. The sonars
 ```
 double sonar_readings[8][2]{};   //8 (x,y) readings 
 ```
+Variables for setting methods of obstacle representation and harmonic fields estimation.
+```
+bool btn_BAYES; //BAYES obstacle representation
+bool btn_HIMM;  //HIMM obstacles representation
+bool btn_GOAL;  //Active Exp. Mode (false) - Navigation Mode (True)
+bool btn_GS;    //Gauss-Seidel harmonic fields method
+bool btn_SOR;   //SOR harmonic fields method
+```
+
+When in navigation mode, the 'goal' variable represents its coordinates.
+
+```
+std::pair<int,int> goal = std::make_pair (0,0); //goal for navigation
+```
+#### FUNCTIONS AND ALGORITHM FLOW
