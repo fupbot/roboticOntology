@@ -106,6 +106,9 @@ std::string pose_topic;
 nh_->param<std::string>("pose_topic", pose_topic, "/RosAria/cmd_vel");
 pub_topic_ = nh_->advertise<geometry_msgs::Twist>(pose_topic,1);
 ```
+----
+
+**From this step onwards, the following code runs on an infinite loop every 100 milliseconds:**<br> <br>
 The readings coming from /pose are converted and attributed to the robot in the function 'posePosition'. The (x,y) position variables are attributed to the robot. The quaternion information is converted to roll, pitch and yaw angles. The roll and pitch angles are always zero, and yaw is then attributed to the robot's rotation.
 ```
 void RosMappingGUI::posePosition(const nav_msgs::Odometry::ConstPtr &msg){
@@ -151,3 +154,17 @@ Both **Bayes()** and **HIMM()** functions perform a double coordinate conversion
 The **Bayes()** function estimates the probabilities based on the bayes probability function as follows: (add reference)
 
 The **HIMM()** function estimates the occupation score on a scale from -1 (fully unoccupied) to 15 (fully occupied). Every time a grid cell is read from one of the sonars, the cell HIMM score increments by one. If the cell is not read on the following iteration, it is decremented by one. When the score reaches 7 or greater, the cell is considered occupied and an obstacle is marked on that spot. This method is preferred over Bayes due to its simplicity and good results.
+
+---------
+Once the obstacles are read and estimated on the map, the **calcHarmonicPot()** function is executed. This function has the following steps:
+1. All unexplored cells start with the potential of 0. Cells that have been previously marked as occupied are given the potential field value of 1. The remaining cells are calculated in this function.
+2. A bounding box is created surrounding the maximum range of the sensors around the robot. This optimizes the potential calculation, preventing the estimation of uncessary areas of the map. 
+3. The function sweeps the bounding box in four different ways: top left to bottom right, bottom left to top right, top right to bottom left, and bottom right to top left. This ensures smoothness to the estimated field.
+4. The potential field is calculated for each cell by taking the average potential value of its 8 surrounding cells on each sweep.
+
+Finally, after the potential field is calculated, the program calls the **navGoal()**  function which sets the robot's speed and direction on the /cmd_vel topic based on its surrounding potential field. The robot will always head towards the unexplored parts of map, guided by the estimated potential field.
+
+---------
+This whole process runs on an infinite loop. It reads data from sensors, updates the map with obstacles information and field values, and then sets the commands for the robot. It currently does not have a final finishing condition.
+
+--------
