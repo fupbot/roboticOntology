@@ -1,0 +1,113 @@
+@startuml Base UML 
+
+'classes 
+class ROSSetup {
+    refreshRate : int
+    void connection()
+    void publishers(string[] nodes)
+    void subscribers(string[] nodes)
+}
+
+class cellGrid {
+    gridSize : int
+    void initGrid()
+}
+
+abstract class fieldEstimator {
+    gridCoord : tuple<int,int>
+    relaxation : int
+    float estimate(gridCoord, relaxation)
+}
+
+class SORPotential {
+    gridCoord : tuple<int,int>
+    relaxation : int
+    float estimate(gridCoord, relaxation)
+}
+
+class GSPotential {
+    gridCoord : tuple<int,int>
+    relaxation : int
+    float estimate(gridCoord, relaxation)
+}
+
+abstract class obstacleEstimator {
+    sonarId : int
+    gridCoord : tuple<int,int>
+    void estimate()
+}
+
+class bayesObstacles {
+    sonarId : int
+    gridCoord : tuple<int,int>
+    void estimate()
+}
+
+class HIMMObstacles {
+    sonarId : int
+    gridCoord : tuple<int,int>
+    void estimate()
+}
+
+abstract class sensorData {
+    data : type
+}
+
+class sonarReadings {
+    gridSize : int
+    void test()
+}
+
+class poseReadings {
+    gridSize : int
+    void test()
+}
+
+abstract class commandData {
+    data : type
+}
+
+class moveCommand {
+    gridSize : int
+    void test()
+}
+
+class convertCoordinates {
+    scale : float
+    angle : float 
+    transX : float
+    transY : float 
+    xPos : float
+    yPos : float
+    tuple convert()
+}
+
+class navigationGoal {
+    gridSize : int
+    void test()
+}
+
+class exploreWorld {
+    gridSize : int
+    void test()
+}
+
+'relations
+sensorData --|> sonarReadings
+sensorData --|> poseReadings
+
+commandData --|> moveCommand
+
+fieldEstimator --|> SORPotential
+fieldEstimator --|> GSPotential
+
+obstacleEstimator --|> bayesObstacles
+obstacleEstimator --|> HIMMObstacles
+
+together {
+    class ROSSetup
+    class cellGrid
+}
+
+
+@enduml 
